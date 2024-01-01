@@ -1,12 +1,10 @@
-import Layout from "@/component/Layout";
 import Link from "next/link";
-import { useState } from "react";
 
 export default function Home() {
   return (
-    <Layout>
-      <h1>Map Index page</h1>
-      <ul>
+    <>
+      <h1 className="font-bold">Map Index page</h1>
+      <ul className="px-4 py-2">
         <li>
           <Link href="/stores">맛집 목록</Link>
         </li>
@@ -29,6 +27,6 @@ export default function Home() {
           <Link href="/users/likes">찜한 맛집</Link>
         </li>
       </ul>
-    </Layout>
+    </>
   )
 }

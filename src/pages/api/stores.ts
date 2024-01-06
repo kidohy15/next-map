@@ -13,7 +13,9 @@ export default async function handler(
 
   // prisma 로 데이터를 가져온다
   const prisma = new PrismaClient();
-  const stores = await prisma.store.findMany();
+  const stores = await prisma.store.findMany({
+    orderBy: { id: "asc" },
+  });
 
   res.status(200).json(stores);
 }

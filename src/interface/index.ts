@@ -22,3 +22,10 @@ export interface StoreType {
   storeType: string | null; // 판매 업종 코드
   foodCertifyName: string | null; // 식품인증 구분명
 }
+
+export interface StoreApiResponse {
+  data: StoreType[];
+  totalPage?: number;
+  totalCount?: number;
+  page?: number;
+}

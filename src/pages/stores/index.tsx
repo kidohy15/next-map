@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import Loading from "@/components/Loading";
 import Pagination from "@/components/Pagination";
 import { StoreApiResponse, StoreType } from "@/interface";
@@ -8,13 +8,15 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useInfiniteQuery, useQuery } from "react-query";
 import useIntersectionObserver from "@/hooks/useIntersectionObserver";
+import Loader from "@/components/Loader";
 
 export default function StoreListPage() {
   const router = useRouter();
   const { page = "1" }: any = router.query;
   const ref = useRef<HTMLDivElement | null>(null);
   const pageRef = useIntersectionObserver(ref, {});
-  console.log(pageRef);
+  const isPageEnd = !!pageRef?.isIntersecting;
+  // console.log(pageRef);
 
   // console.log(page);
 
@@ -61,6 +63,25 @@ export default function StoreListPage() {
   // if (isLoading) {
   //   return <span>Loading...</span>;
   // }
+
+  const fetchNext = useCallback(async () => {
+    const res = await fetchNextPage();
+    if (res.isError) {
+      console.log(res.error);
+    }
+  }, [fetchNextPage])
+
+  useEffect(() => {
+    let timerId: NodeJS.Timeout | undefined
+    if (isPageEnd && hasNextPage) {
+      timerId = setTimeout(() => {
+
+        fetchNext();
+      }, 500);
+    }
+
+    return () => clearTimeout(timerId)
+  }, [fetchNext, isPageEnd, hasNextPage])
 
   if (isError) {
     return (
@@ -118,12 +139,17 @@ export default function StoreListPage() {
           ))
         )}
       </ul>
+      {/* Pagination 영역 */}
       {/* {stores?.totalPage && (
         <Pagination total={stores?.totalPage} page={page} />
       )} */}
-      <button type="button" onClick={() => fetchNextPage()}>
+
+      {/* fetchNextPage 함수 호출 버튼 */}
+      {/* <button type="button" onClick={() => fetchNextPage()}>
         Next Page
-      </button>
+      </button> */}
+      
+      {(isFetching || hasNextPage || isFetchingNextPage) && <Loader />}
       <div className="w-full touch-none h-10 mb-10" ref={ref} />
     </div>
   );

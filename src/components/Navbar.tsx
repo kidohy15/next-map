@@ -10,7 +10,7 @@ export default function Navbar() {
   const { data, status } = useSession();
 
   // console.log(useSession());
-  console.log(data, status);
+  // console.log(data, status);
   return (
     <>
       <div className="navbar">

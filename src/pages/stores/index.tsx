@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { useInfiniteQuery, useQuery } from "react-query";
 import useIntersectionObserver from "@/hooks/useIntersectionObserver";
 import Loader from "@/components/Loader";
+import SearchFilter from "@/components/SearchFilter";
 
 export default function StoreListPage() {
   const router = useRouter();
@@ -69,19 +70,18 @@ export default function StoreListPage() {
     if (res.isError) {
       console.log(res.error);
     }
-  }, [fetchNextPage])
+  }, [fetchNextPage]);
 
   useEffect(() => {
-    let timerId: NodeJS.Timeout | undefined
+    let timerId: NodeJS.Timeout | undefined;
     if (isPageEnd && hasNextPage) {
       timerId = setTimeout(() => {
-
         fetchNext();
       }, 500);
     }
 
-    return () => clearTimeout(timerId)
-  }, [fetchNext, isPageEnd, hasNextPage])
+    return () => clearTimeout(timerId);
+  }, [fetchNext, isPageEnd, hasNextPage]);
 
   if (isError) {
     return (
@@ -95,6 +95,8 @@ export default function StoreListPage() {
   // console.log("result", result);
   return (
     <div className="px-4 md:max-w-4xl mx-auto py-8">
+      {/* search filter */}
+      <SearchFilter />
       <ul role="list" className="divide-y devide-gray-100">
         {isLoading ? (
           <Loading />
@@ -102,7 +104,7 @@ export default function StoreListPage() {
           // stores?.data?.map((store, index) => (
           stores?.pages?.map((page, index) => (
             <React.Fragment key={index}>
-              {page.data.map((store: StoreType, i:any) => (
+              {page.data.map((store: StoreType, i: any) => (
                 <li className="flex justify-between gap-x-6 py-5" key={i}>
                   <div className="flex gap-x-4">
                     <Image
@@ -148,7 +150,7 @@ export default function StoreListPage() {
       {/* <button type="button" onClick={() => fetchNextPage()}>
         Next Page
       </button> */}
-      
+
       {(isFetching || hasNextPage || isFetchingNextPage) && <Loader />}
       <div className="w-full touch-none h-10 mb-10" ref={ref} />
     </div>

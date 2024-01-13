@@ -2,6 +2,13 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { StoreApiResponse, StoreType } from "@/interface";
 import { PrismaClient } from "@prisma/client";
 
+interface Responsetype {
+  page?: string;
+  limit?: string;
+  q?: string;
+  district?: string;
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<StoreApiResponse | StoreType[] | StoreType>
@@ -11,7 +18,7 @@ export default async function handler(
   //   "DATA"
   // ] as StoreType[];
 
-  const { page = "" }: { page?: string } = req.query;
+  const { page = "", limit = "", q, district }: Responsetype = req.query;
   const prisma = new PrismaClient(); // prisma 로 데이터를 가져오기 위해 객체 생성
 
   if (page) {
@@ -19,7 +26,11 @@ export default async function handler(
     const skippage = parseInt(page) - 1;
     const stores = await prisma.store.findMany({
       orderBy: { id: "asc" },
-      take: 10,
+      where: {
+        name: q ? { contains: q } : {},
+        address: district ? { contains: district } : {},
+      },
+      take: parseInt(limit),
       skip: skippage * 10,
     });
 

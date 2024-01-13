@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Loading from "@/components/Loading";
 import Pagination from "@/components/Pagination";
 import { StoreApiResponse, StoreType } from "@/interface";
@@ -12,11 +12,13 @@ import Loader from "@/components/Loader";
 import SearchFilter from "@/components/SearchFilter";
 
 export default function StoreListPage() {
-  const router = useRouter();
-  const { page = "1" }: any = router.query;
+  // const router = useRouter();
+  // const { page = "1" }: any = router.query;
   const ref = useRef<HTMLDivElement | null>(null);
   const pageRef = useIntersectionObserver(ref, {});
   const isPageEnd = !!pageRef?.isIntersecting;
+  const [q, setQ] = useState<string | null>(null);
+  const [district, setDistrict] = useState<string | null>(null);
   // console.log(pageRef);
 
   // console.log(page);
@@ -30,12 +32,20 @@ export default function StoreListPage() {
   //   return data as StoreApiResponse;
   // });
 
+  const searchParams = {
+    q: q,
+    district: district,
+  };
+
+  // console.log(searchParams);
+
   const fetchStores = async ({ pageParam = 1 }) => {
     // const res = await fetch("/api/projects?cusor=" + pageParam);
     const { data } = await axios("/api/stores?page=" + pageParam, {
       params: {
         limit: 10,
         page: pageParam,
+        ...searchParams,
       },
     });
 
@@ -51,7 +61,7 @@ export default function StoreListPage() {
     hasNextPage,
     isError,
     isLoading,
-  } = useInfiniteQuery("stores", fetchStores, {
+  } = useInfiniteQuery(["stores", searchParams], fetchStores, {
     getNextPageParam: (lastPage: any) =>
       lastPage.data?.length > 0 ? lastPage.page + 1 : undefined,
   });
@@ -96,7 +106,7 @@ export default function StoreListPage() {
   return (
     <div className="px-4 md:max-w-4xl mx-auto py-8">
       {/* search filter */}
-      <SearchFilter />
+      <SearchFilter setQ={setQ} setDistrict={setDistrict} />
       <ul role="list" className="divide-y devide-gray-100">
         {isLoading ? (
           <Loading />

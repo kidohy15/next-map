@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { StoreApiResponse, StoreType } from "@/interface";
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
+import prisma from "@/db";
 
 interface Responsetype {
   page?: string;
@@ -19,7 +20,7 @@ export default async function handler(
   // ] as StoreType[];
 
   const { page = "", limit = "", q, district }: Responsetype = req.query;
-  const prisma = new PrismaClient(); // prisma 로 데이터를 가져오기 위해 객체 생성
+  // const prisma = new PrismaClient(); // prisma 로 데이터를 가져오기 위해 객체 생성
 
   if (page) {
     const count = await prisma.store.count();

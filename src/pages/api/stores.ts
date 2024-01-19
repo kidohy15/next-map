@@ -22,37 +22,48 @@ export default async function handler(
   const { page = "", limit = "", q, district }: Responsetype = req.query;
   // const prisma = new PrismaClient(); // prisma 로 데이터를 가져오기 위해 객체 생성
 
-  if (page) {
-    const count = await prisma.store.count();
-    const skippage = parseInt(page) - 1;
-    const stores = await prisma.store.findMany({
-      orderBy: { id: "asc" },
-      where: {
-        name: q ? { contains: q } : {},
-        address: district ? { contains: district } : {},
-      },
-      take: parseInt(limit),
-      skip: skippage * 10,
+  if (req.method === "POST") {
+    // 데이터 생성(POST)을 처리한다
+    const data = req.body;
+    const result = await prisma.store.create({
+      data: { ...data },
     });
 
-    // totalPage, data, page(현재 페이지), totalCount
-
-    res.status(200).json({
-      page: parseInt(page),
-      data: stores,
-      totalCount: count,
-      totalPage: Math.ceil(count / 10),
-    });
+    return res.status(200).json(result);
   } else {
-    const { id }: { id?: string } = req.query;
+    // GET 요청 처리
+    if (page) {
+      const count = await prisma.store.count();
+      const skippage = parseInt(page) - 1;
+      const stores = await prisma.store.findMany({
+        orderBy: { id: "asc" },
+        where: {
+          name: q ? { contains: q } : {},
+          address: district ? { contains: district } : {},
+        },
+        take: parseInt(limit),
+        skip: skippage * 10,
+      });
 
-    const stores = await prisma.store.findMany({
-      orderBy: { id: "asc" },
-      where: {
-        id: id ? parseInt(id) : {},
-      },
-    });
+      // totalPage, data, page(현재 페이지), totalCount
 
-    return res.status(200).json(id ? stores[0] : stores);
+      res.status(200).json({
+        page: parseInt(page),
+        data: stores,
+        totalCount: count,
+        totalPage: Math.ceil(count / 10),
+      });
+    } else {
+      const { id }: { id?: string } = req.query;
+
+      const stores = await prisma.store.findMany({
+        orderBy: { id: "asc" },
+        where: {
+          id: id ? parseInt(id) : {},
+        },
+      });
+
+      return res.status(200).json(id ? stores[0] : stores);
+    }
   }
 }

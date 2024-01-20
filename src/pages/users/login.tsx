@@ -8,7 +8,6 @@ import { useRouter } from "next/router";
 export default function LoginPage() {
   const { status, data: session } = useSession();
   const router = useRouter();
-
   // console.log(session);
 
   useEffect(() => {

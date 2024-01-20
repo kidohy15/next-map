@@ -23,10 +23,6 @@ export default function StoreListPage() {
   const [district, setDistrict] = useState<string | null>(null);
   const searchValue = useRecoilValue(searchState);
 
-  // console.log(pageRef);
-
-  // console.log(page);
-
   // const {
   //   isLoading,
   //   isError,
@@ -40,8 +36,6 @@ export default function StoreListPage() {
     q: searchValue?.q,
     district: searchValue?.district,
   };
-
-  // console.log(searchParams);
 
   const fetchStores = async ({ pageParam = 1 }) => {
     // const res = await fetch("/api/projects?cusor=" + pageParam);
@@ -69,11 +63,6 @@ export default function StoreListPage() {
     getNextPageParam: (lastPage: any) =>
       lastPage.data?.length > 0 ? lastPage.page + 1 : undefined,
   });
-
-  // console.log('result',result);
-  // console.log("result", data);
-
-  // console.log(stores);
 
   // if (isLoading) {
   //   return <span>Loading...</span>;
@@ -105,8 +94,6 @@ export default function StoreListPage() {
     );
   }
 
-  // console.log("stores", stores);
-  // console.log("result", result);
   return (
     <div className="px-4 md:max-w-4xl mx-auto py-8">
       {/* search filter */}

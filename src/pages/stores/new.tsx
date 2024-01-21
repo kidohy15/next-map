@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-export default function StoreNewpage() {
+export default function StoreNewPage() {
   const router = useRouter();
   const {
     register,

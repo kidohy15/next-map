@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { useQuery } from "react-query";
+import { toast } from "react-toastify";
 
 export default function StorePage() {
   // const [map, setMap] = useState(null);
@@ -29,6 +30,26 @@ export default function StorePage() {
     enabled: !!id,
     refetchOnWindowFocus: false,
   });
+
+  const handleDelete = async () => {
+    const confirm = window.confirm("해당 가게를 삭제하시겠습니까?");
+
+    if (confirm && store) {
+      try {
+        const result = await axios.delete(`/api/stores?id=${store?.id}`);
+
+        if (result.status === 200) {
+          toast.success("가게를 삭제했습니다.");
+          router.replace("/");
+        } else {
+          toast.error("다시 시도해주세요.");
+        }
+      } catch (e) {
+        console.log(e);
+        toast.error("다시 시도해주세요.");
+      }
+    }
+  };
 
   if (isError) {
     return (
@@ -54,14 +75,20 @@ export default function StorePage() {
               {store?.address}
             </p>
           </div>
-          <div className="flex items-center gap-4">
-            <Link className="underline" href={`/stores/${store?.id}/edit`}>
-              수정
-            </Link>
-            <button type="button" className="underline">
-              삭제
-            </button>
-          </div>
+          {status === "authenticated" && (
+            <div className="flex items-center gap-4 px-4 py-3">
+              <Link className="underline" href={`/stores/${store?.id}/edit`}>
+                수정
+              </Link>
+              <button
+                type="button"
+                onClick={handleDelete}
+                className="underline"
+              >
+                삭제
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="mt-6 border-t border-gray-100">

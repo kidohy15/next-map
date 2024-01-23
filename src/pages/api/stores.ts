@@ -3,6 +3,8 @@ import { StoreApiResponse, StoreType } from "@/interface";
 // import { PrismaClient } from "@prisma/client";
 import prisma from "@/db";
 import axios from "axios";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./auth/[...nextauth]";
 
 interface Responsetype {
   page?: string;
@@ -22,6 +24,7 @@ export default async function handler(
   // ] as StoreType[];
 
   const { page = "", limit = "", q, district, id }: Responsetype = req.query;
+  const session = await getServerSession(req, res, authOptions);
   // const prisma = new PrismaClient(); // prisma 로 데이터를 가져오기 위해 객체 생성
 
   if (req.method === "POST") {
@@ -102,11 +105,16 @@ export default async function handler(
       });
     } else {
       const { id }: { id?: string } = req.query;
-
+      // 상세 페이지 데이터 가져옴
       const stores = await prisma.store.findMany({
         orderBy: { id: "asc" },
         where: {
           id: id ? parseInt(id) : {},
+        },
+        include: {
+          likes: {
+            where: session ? { userId: session.user.id } : {},
+          },
         },
       });
 

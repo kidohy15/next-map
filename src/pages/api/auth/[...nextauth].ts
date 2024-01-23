@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 // import { PrismaAdapter } from "@auth/prisma-adapter"
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 // import { PrismaClient } from "@prisma/client";
@@ -10,7 +10,7 @@ import KakaoProvider from "next-auth/providers/kakao";
 
 // const prisma = new PrismaClient();
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt" as const,
     maxAge: 60 * 60 * 24,
@@ -37,6 +37,22 @@ export const authOptions = {
   pages: {
     // 외부 API 로그인 인증 페이지를 커스텀 페이지로 이동하게 함
     signIn: "/users/login",
+  },
+
+  callbacks: {
+    session: ({ session, token }) => ({
+      ...session,
+      user: {
+        ...session.user,
+        id: token.sub,
+      },
+    }),
+    jwt: async ({ user, token }) => {
+      if (user) {
+        token.sub = user.id;
+      }
+      return token;
+    },
   },
 };
 

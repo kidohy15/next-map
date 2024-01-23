@@ -1,3 +1,4 @@
+import Like from "@/components/Like";
 import Loader from "@/components/Loader";
 import Map from "@/components/Map";
 import Marker from "@/components/Marker";
@@ -75,8 +76,9 @@ export default function StorePage() {
               {store?.address}
             </p>
           </div>
-          {status === "authenticated" && (
+          {status === "authenticated" && store && (
             <div className="flex items-center gap-4 px-4 py-3">
+              <Like storeId={store.id} />
               <Link className="underline" href={`/stores/${store?.id}/edit`}>
                 수정
               </Link>

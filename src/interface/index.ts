@@ -21,6 +21,13 @@ export interface StoreType {
   category: string | null; // 커스텀 이미지를 위한 카테고리 코드 네임
   storeType: string | null; // 판매 업종 코드
   foodCertifyName: string | null; // 식품인증 구분명
+  likes?: LikeInterface[];
+}
+
+export interface LikeInterface {
+  id: number;
+  storeId: number;
+  userId: number;
 }
 
 export interface StoreApiResponse {

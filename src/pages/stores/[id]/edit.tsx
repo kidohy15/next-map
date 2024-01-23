@@ -43,7 +43,6 @@ export default function StoreEditPage() {
     },
     refetchOnWindowFocus: false,
   });
-  console.log(store);
 
   if (isError) {
     return (

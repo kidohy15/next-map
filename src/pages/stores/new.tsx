@@ -20,7 +20,6 @@ export default function StoreNewPage() {
       onSubmit={handleSubmit(async (data) => {
         try {
           const result = await axios.post("/api/stores", data);
-          // console.log("result", result)
 
           if (result.status === 200) {
             // 성공 케이스

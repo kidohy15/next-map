@@ -67,7 +67,7 @@
     background: darkblue;
     color: white;
     height: 100vh; */
-    @apply fixed w-full text-white h-screen top-[52px] bg-blue-800
+    @apply fixed w-full text-white h-screen top-[52px] bg-blue-800 z-[100];
   }
   
   .navbar__list {

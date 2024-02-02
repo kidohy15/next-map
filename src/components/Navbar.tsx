@@ -52,22 +52,41 @@ export default function Navbar() {
       {isOpen && (
         <div className="navbar--mobile">
           <div className="navbar__list--mobile">
-            <Link href="/stores" className="navbar__list--item--mobile">
+            <Link
+              href="/stores"
+              className="navbar__list--item--mobile"
+              onClick={() => setIsOpen(false)}
+            >
               맛집 목록
             </Link>
-            <Link href="/stores/new" className="navbar__list--item--mobile">
+            <Link
+              href="/stores/new"
+              className="navbar__list--item--mobile"
+              onClick={() => setIsOpen(false)}
+            >
               맛집 등록
             </Link>
-            <Link href="/users/likes" className="navbar__list--item--mobile">
+            <Link
+              href="/users/likes"
+              className="navbar__list--item--mobile"
+              onClick={() => setIsOpen(false)}
+            >
               찜한 가게
             </Link>
-            <Link href="/users/likes" className="navbar__list--item--mobile">
+            <Link
+              href="/users/likes"
+              className="navbar__list--item--mobile"
+              onClick={() => setIsOpen(false)}
+            >
               마이페이지
             </Link>
             {status === "authenticated" ? (
               <button
                 type="button"
-                onClick={() => signOut()}
+                onClick={() => {
+                  signOut();
+                  setIsOpen(false);
+                }}
                 className="navbar__list--item--mobile"
               >
                 로그아웃
@@ -76,6 +95,7 @@ export default function Navbar() {
               <Link
                 href="/api/auth/signin"
                 className="navbar__list--item--mobile"
+                onClick={() => setIsOpen(false)}
               >
                 로그인
               </Link>

@@ -10,6 +10,8 @@
 //   crtfc_gbn_nm: string; // 식품인증 구분명
 // }
 
+import { User } from "@prisma/client";
+
 // 수정한 타입 코드
 export interface StoreType {
   id: number;
@@ -28,6 +30,36 @@ export interface LikeInterface {
   id: number;
   storeId: number;
   userId: number;
+  store?: StoreType;
+}
+
+export interface LikeApiResponse {
+  data: LikeInterface[];
+  totalPage?: number;
+  page?: number;
+}
+
+export interface CommentInterface {
+  id: number;
+  storeId: number;
+  userId: number;
+  store?: StoreType;
+  body: string;
+  user?: UserType;
+  createdAt: Date;
+}
+
+interface UserType {
+  id: number;
+  email: string;
+  name?: string | null;
+  image?: string | null;
+}
+
+export interface CommentApiResponse {
+  data: CommentInterface[];
+  totalPage?: number;
+  page?: number;
 }
 
 export interface StoreApiResponse {
@@ -46,11 +78,4 @@ export interface LocationType {
 export interface SearchType {
   q?: string;
   district?: string;
-}
-
-export interface LikeInterface {
-  id: number;
-  storeId: number;
-  userId: number;
-  store?: StoreType;
 }

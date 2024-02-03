@@ -2,13 +2,20 @@
 import { CommentApiResponse } from "@/interface";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { toast } from "react-toastify";
 
 interface CommentListProps {
   comments?: CommentApiResponse;
+  displayStore?: boolean;
+  refetch: () => void;
 }
 
-export default function CommentList({ comments }: CommentListProps) {
+export default function CommentList({
+  comments,
+  displayStore,
+  refetch,
+}: CommentListProps) {
   const { data: session } = useSession();
 
   const handleDeleteComment = async (id: number) => {
@@ -20,6 +27,7 @@ export default function CommentList({ comments }: CommentListProps) {
 
         if (result.status === 200) {
           toast.success("댓글을 삭제했습니다.");
+          refetch?.();
         } else {
           toast.error("다시 시도해주세요.");
         }
@@ -48,12 +56,23 @@ export default function CommentList({ comments }: CommentListProps) {
             </div>
             <div className="flex flex-col space-y-1 flex-1">
               <div>
-                {comment?.user?.name ?? "사용자"} | {comment?.user?.email}
+                {/* {comment?.user?.name ?? "사용자"} | {comment?.user?.email} */}
+                {comment?.user?.email}
               </div>
               <div className="text-xs">
                 {new Date(comment?.createdAt)?.toLocaleDateString()}
               </div>
               <div className="text-black mt-1 text-base">{comment.body}</div>
+              {displayStore && comment.store && (
+                <div className="mt-2">
+                  <Link
+                    href={`/stores/${comment.store.id}`}
+                    className="text-blue-700 hover:text-blue-600 underline font-medium"
+                  >
+                    {comment.store.name}
+                  </Link>
+                </div>
+              )}
             </div>
             <div>
               {comment.userId === session?.user.id && (

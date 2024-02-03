@@ -6,6 +6,7 @@ import axios from "axios";
 import { CommentApiResponse } from "@/interface";
 import { useQuery } from "react-query";
 import CommentList from "./CommentList";
+import Pagination from "../Pagination";
 
 interface CommentProps {
   storeId: number;
@@ -18,16 +19,18 @@ export default function Comments({ storeId }: CommentProps) {
 
   const fetchComments = async () => {
     const { data } = await axios(
-      `/api/comments?storeId=${storeId}&limit=10&page=${page}`
+      `/api/comments?storeId=${storeId}&limit=5&page=${page}`
     );
 
     return data as CommentApiResponse;
   };
 
   const { data: comments, refetch } = useQuery(
-    `conments-${storeId}`,
+    `conments-${storeId}-${page}`,
     fetchComments
   );
+
+  console.log("comments", comments);
 
   return (
     <div className="md:max-w-2xl py-8 px-2 mb-20 mx-auto">
@@ -36,7 +39,13 @@ export default function Comments({ storeId }: CommentProps) {
         <CommentForm storeId={storeId} refetch={refetch} />
       )}
       {/* comment list */}
-      <CommentList comments={comments} />
+      <CommentList comments={comments} refetch={refetch} />
+      {/* pagination */}
+      <Pagination
+        total={comments?.totalPage}
+        page={page}
+        pathname={`/stores/${storeId}`}
+      />
     </div>
   );
 }

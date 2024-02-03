@@ -9,6 +9,7 @@ interface ResponseType {
   page?: string;
   limit?: string;
   storeId?: string;
+  user?: boolean;
 }
 
 export default async function handler(
@@ -21,6 +22,7 @@ export default async function handler(
     page = "1",
     limit = "10",
     storeId = "",
+    user = false,
   }: ResponseType = req.query;
 
   if (req.method === "POST") {
@@ -57,6 +59,7 @@ export default async function handler(
     const count = await prisma.comment.count({
       where: {
         storeId: storeId ? parseInt(storeId) : {},
+        userId: user ? session?.user.id : {},
       },
     });
 
@@ -64,9 +67,14 @@ export default async function handler(
       orderBy: { createdAt: "desc" },
       where: {
         storeId: storeId ? parseInt(storeId) : {},
+        userId: user ? session?.user.id : {},
       },
       skip: skipPage * parseInt(limit),
       take: parseInt(limit),
+      include: {
+        user: true,
+        store: true,
+      },
     });
 
     return res.status(200).json({

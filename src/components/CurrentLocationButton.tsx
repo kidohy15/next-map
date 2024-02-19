@@ -6,7 +6,7 @@ import { useRecoilValue } from "recoil";
 import FullPageLoader from "./FullPageLoader";
 
 export default function CurrentLocationButton() {
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const map = useRecoilValue(mapState);
 
   const handleCurrentPosition = () => {

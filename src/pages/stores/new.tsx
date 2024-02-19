@@ -19,6 +19,7 @@ export default function StoreNewPage() {
       className="px-4 md:max-w-4xl mx-auto py-8"
       onSubmit={handleSubmit(async (data) => {
         try {
+          console.log("data 확인", data);
           const result = await axios.post("/api/stores", data);
 
           if (result.status === 200) {

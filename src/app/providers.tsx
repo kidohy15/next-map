@@ -1,5 +1,6 @@
+"use client";
+
 import Layout from "@/components/Layout";
-import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -8,26 +9,37 @@ import { RecoilRoot } from "recoil";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Navbar from "@/components/Navbar";
 
 const queryClient = new QueryClient();
 
-export default function App({ Component, pageProps }: AppProps) {
-  const { session } = pageProps;
+interface Props{
+  children?: React.ReactNode
+}
+
+export const NextProvider = ({ children }: Props) => {
   return (
     <RecoilRoot>
       <QueryClientProvider client={queryClient}>
-        <SessionProvider session={session}>
-          <Layout>
-            <Component {...pageProps} />
+        <SessionProvider>
+            {children}
             <ToastContainer
               autoClose={1000}
               pauseOnFocusLoss={false}
               pauseOnHover={false}
             />
-          </Layout>
           <ReactQueryDevtools />
         </SessionProvider>
       </QueryClientProvider>
     </RecoilRoot>
   );
+};
+
+export const NextLayout = ({ children }: Props) => {
+  return (
+    <div className="layout">
+      <Navbar />
+      {children}
+    </div>
+  )
 }

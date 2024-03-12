@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { useSession } from "next-auth/react";
 import CommentForm from "./CommentForm";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import { CommentApiResponse } from "@/interface";
 import { useQuery } from "react-query";
@@ -10,12 +10,15 @@ import Pagination from "../Pagination";
 
 interface CommentProps {
   storeId: number;
+  params?: {
+    page?: string;
+  };
 }
 
-export default function Comments({ storeId }: CommentProps) {
+export default function Comments({ storeId, params }: CommentProps) {
   const { status } = useSession();
   const router = useRouter();
-  const { page = "1" }: any = router.query;
+  const page = params?.page || "1";
 
   const fetchComments = async () => {
     const { data } = await axios(

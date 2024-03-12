@@ -5,13 +5,13 @@ import Markers from "@/components/Markers";
 
 import StoreBox from "@/components/StoreBox";
 import { StoreType } from "@/interface";
-import axios from "axios";
 import CurrentLocationButton from "@/components/CurrentLocationButton";
 
-export default function Home({ stores }: { stores: StoreType[] }) {
+export default async function Home() {
   // const [map, setMap] = useState(null);
   // const [currentStore, setCurrentStore] = useState(null);
 
+  const stores: StoreType[] = await getData();
   return (
     <>
       <Map />
@@ -23,17 +23,20 @@ export default function Home({ stores }: { stores: StoreType[] }) {
 }
 
 // export async function getStaticProps() {
-export async function getServerSideProps() {
+async function getData() {
   // fetch 로 데이터 가져오는 방법
   // const stores = await fetch(
   //   `${process.env.NEXT_PUBLIC_API_URL}/api/stores`
   // ).then((res) => res.json());
 
   // axios 로 데이터 가져오는 방법
-  const stores = await axios(`${process.env.NEXT_PUBLIC_API_URL}/api/stores`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/stores`, {
+    cache: "no-store",
+  });
 
-  return {
-    props: { stores: stores.data },
-    // revalidate: 60 * 60,
-  };
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
+
+  return res.json();
 }

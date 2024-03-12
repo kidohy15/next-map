@@ -1,3 +1,5 @@
+"use client"
+
 /*global kakao*/
 import { locationState, mapState } from "@/atom";
 import Script from "next/script";
